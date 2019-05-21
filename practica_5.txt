@@ -1,0 +1,64 @@
+Autor: Óscar Anadón O.	NIA: 760628
+
+PARTE 1
+
+Como bien indica el guion de la practica hemos añadido un nuevo disco con las opciones:
+Add hard disk
+Create a new disk
+File type VDI
+Fixed size storage
+40M size (aproximadamente)
+
+A continuación para realizar las particiones hemos ejecutado:
+#sudo parted /dev/sdb
+#(parted) mklabel gpt 
+#(parted)
+#(parted) mkpart ext3 1 20
+sudo mkfs -t ext3 /dev/sdb1
+
+Se realizara de forma analoga con las opciones:
+#sudo parted /dev/sdb
+#(parted)
+#(parted) mkpart ext3 20 40
+sudo mkfs -t ext3 /dev/sdb2
+
+
+A continuacion montaremos en la carpeta /mnt, conviene crear un directorio personal
+para cada particion. Para ello ejecutaremos 
+#mount /dev/sdb1 /mnt/part1
+#mount /dev/sdb2 /mnt/part2
+
+Para su automontaje al arrancar escirbiremos en /etc/fstab
+#/dev/sdb1 /mnt/part1 ext3 defaults 0 0
+#/dev/sdb2 /mnt/part2 ext4 defaults 0 0
+
+Para comprobar la correcion del montaje ejecutaremos  "lsblk" y veremos en el campo
+MOUNTPOINT que se encuentra en /mnt/part[1|2]
+
+PARTE 2	
+
+Se han ejecutado los comandos junto con ssh teniendo en cuenta las pertinentes direccioens
+
+PARTE 3
+
+VG
+Para poder ejecutar la parte3_vg primero tenemos que desmontar con umount y luego simplemente añadir con vgextend
+
+LV
+Para tratar los datos deseados se ha hecho un "read linea" y se ha cogido cada parametros ejecutando: #<datoDeseado>=$(echo linea|cut -f1 -d',')
+
+En caso de que el volumen logico sea nuevo tendremos que, en este mismo orden:
+Crear el volumen logico # lvcreate
+Dar formato al volumen logico # mkfs
+Montar el volumen logico # mount
+Introducir los datos en fstab para que se monte siempre al arrancar # tee
+
+Tanto para volumenes nuevos como para antiguos, para extender el volumen logico tendremos
+que ejecutar
+lvextend , para expandir el disco
+resize2fs , para reajustar el tamaño del sistema de fichero
+
+
+
+
+
